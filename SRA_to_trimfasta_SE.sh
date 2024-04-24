@@ -53,6 +53,6 @@ if [ "$stop_instance" = true ]; then
   # Get the id of the EC2 instance
   instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
   # Get the region of the EC2 instance
-  region=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/.$//')
+  region=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/')  
   aws ec2 stop-instances --instance-ids "$instance_id" --region "$region"
 fi
