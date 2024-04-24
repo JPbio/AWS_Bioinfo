@@ -35,6 +35,10 @@ if [ -z "$input_file" ]; then
   exit 1
 fi
 
+#activating a previously defined defined conda enviorement 
+#conda init
+#conda activate bioinformatics
+
 # Main processing loop
 while IFS= read -r p; do
   fasterq-dump "$p"
