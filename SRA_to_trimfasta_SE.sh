@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#by JPbio 2024
+
 # Help function to display usage instructions
 function display_help {
   echo "Usage: $0 [OPTIONS]"
