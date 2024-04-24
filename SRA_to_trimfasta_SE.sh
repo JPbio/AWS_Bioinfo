@@ -11,7 +11,7 @@ function display_help {
 }
 
 # Default values
-path="s3://trimlibs/albopictus/"
+path="s3://"
 stop_instance=false
 
 # Parse command line options
