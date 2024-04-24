@@ -1,19 +1,17 @@
 #!/bin/bash
 
-#by JPbio https://github.com/JPbio/
-
 # Help function to display usage instructions
 function display_help {
   echo "Usage: $0 [OPTIONS]"
   echo "Options:"
-  echo "  -l, --input-file     Specify the input file containing a list of SRA accessions to process"
+  echo "  -l, --input-file     Specify the input file containing a list of SRA accessions files to process"
   echo "  -p, --path           Specify the destination path in S3 (default: s3://trimlibs/albopictus/)"
   echo "  --stop               Stop the EC2 instance after script execution"
   echo "  -h, --help           Display this help message"
 }
 
 # Default values
-path="s3://"
+path="s3://trimlibs/albopictus/"
 stop_instance=false
 
 # Parse command line options
@@ -52,6 +50,9 @@ done < "$input_file"
 
 # Stop the instance if --stop option is provided
 if [ "$stop_instance" = true ]; then
+  # Get the id of the EC2 instance
   instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-  aws ec2 stop-instances --instance-ids "$instance_id"
+  # Get the region of the EC2 instance
+  region=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/.$//')
+  aws ec2 stop-instances --instance-ids "$instance_id" --region "$region"
 fi
