@@ -2,6 +2,15 @@
 
 #by JPbio 2024
 
+###### ATTENTION: #######
+#to control and access the S3 buckets and instance properties and metadatas from inside the linux prompt accessed via ssh...
+#... the IAM policies to allow it must be set and attached to the instance previously
+#... you also need to install awscli set the 'aws configure' with your credentials and instance region;
+#... it is also easy to get the instance metadata if you install amazon-ec2-utils, I'm having problems with the other appoaches to get the metadata
+#... I'll make an entire folder about instance metadata and operating S3 buckets inside the instance accessed via ssh;  
+########################
+
+
 # Help function to display usage instructions
 function display_help {
   echo "Usage: $0 [OPTIONS]"
@@ -56,9 +65,14 @@ done < "$input_file"
 
 # Stop the instance if --stop option is provided
 if [ "$stop_instance" = true ]; then
-  # Get the id of the EC2 instance
-  instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-  # Get the region of the EC2 instance
-  region=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/')  
+  ### Get the id of the EC2 instance
+  # instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id) # too many cnditions to work
+  instance_id=$(ec2-metadata -i | cut -f2 -d ":" | sed -e 's/^//g') # needs amazon-ec2-utils installed
+  
+  ### Get the region of the EC2 instance
+  #region=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/')  #too many conditions to work
+  region=$(ec2-metadata -z | cut -f2 -d ":" | sed -e 's/^//g') # needs amazon-ec2-utils installed
+ 
+  ### stopping the instace
   aws ec2 stop-instances --instance-ids "$instance_id" --region "$region"
 fi
