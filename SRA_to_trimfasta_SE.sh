@@ -67,12 +67,12 @@ done < "$input_file"
 if [ "$stop_instance" = true ]; then
   ### Get the id of the EC2 instance
   # instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id) # too many cnditions to work
-  instance_id=$(ec2-metadata -i | cut -f2 -d ":" | sed -e 's/^//g') # needs amazon-ec2-utils installed
+  instance_id=$(ec2-metadata -i | cut -f2 -d ":" | sed -e 's/^ //g') # needs amazon-ec2-utils installed
   
   ### Get the region of the EC2 instance
   #region=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/')  #too many conditions to work
-  region=$(ec2-metadata -z | cut -f2 -d ":" | sed -e 's/^//g') # needs amazon-ec2-utils installed
+  region=$(ec2-metadata -z | cut -f2 -d ":" | sed -e 's/^ //g' | sed 's/b//g') # needs amazon-ec2-utils installed
  
   ### stopping the instace
-  aws ec2 stop-instances --instance-ids "$instance_id" --region "$region"
+  sudo aws ec2 stop-instances --instance-ids "$instance_id" --region "$region" #need to fix the need of sudo
 fi
